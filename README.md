@@ -1,6 +1,13 @@
-Forked from https://github.com/digitalbrain79/darknet-nnpack/
+This repository is forked from https://github.com/digitalbrain79/darknet-nnpack/
 
-# Darknet with NNPACK
+A few changes had been made to make it work right out of box on Raspberry Pi 3 B
+1. Minor improvement to Readme to make it easier to follow
+2. Modification to Makefile to work with RPI 3
+3. Added two Python files to wrap the darknet
+4. Come with yolov3-tiny weight
+
+# Step 1: Install NNPACK
+
 NNPACK was used to optimize [Darknet](https://github.com/pjreddie/darknet) without using a GPU. It is useful for embedded devices using ARM CPUs.
 
 Idein's [qmkl](https://github.com/Idein/qmkl) is also used to accelerate the SGEMM using the GPU. This is slower than NNPACK on NEON-capable devices, and primarily useful for ARM CPUs without NEON.
@@ -8,10 +15,15 @@ Idein's [qmkl](https://github.com/Idein/qmkl) is also used to accelerate the SGE
 The NNPACK implementation in Darknet was improved to use transform-based convolution computation, allowing for 40%+ faster inference performance on non-initial frames. This is most useful for repeated inferences, ie. video, or if Darknet is left open to continue processing input instead of allowed to terminate after processing input.
 
 ## Build Instructions
-Log in to Raspberry Pi using SSH.<br/>
-Install [PeachPy](https://github.com/Maratyszcza/PeachPy) and [confu](https://github.com/Maratyszcza/confu)
+Log in to Raspberry Pi using SSH or directly in terminal.<br/>
+
+Make sure ```pip-install``` is included (it should come together with Debian
 ```
 sudo apt-get install python-pip
+```
+
+Install [PeachPy](https://github.com/Maratyszcza/PeachPy) and [confu](https://github.com/Maratyszcza/confu)
+```
 sudo pip install --upgrade git+https://github.com/Maratyszcza/PeachPy
 sudo pip install --upgrade git+https://github.com/Maratyszcza/confu
 ```
@@ -22,6 +34,7 @@ cd ninja
 git checkout release
 ./configure.py --bootstrap
 export NINJA_PATH=$PWD
+cd
 ```
 Install clang (I'm not sure why we need this, NNPACK doesn't use it unless you specifically target it).
 ```
@@ -32,22 +45,42 @@ Install modified [NNPACK](https://github.com/shizukachan/NNPACK)
 git clone https://github.com/shizukachan/NNPACK
 cd NNPACK
 confu setup
+python ./configure.py --backend auto
 ```
-If you are compiling for the Pi Zero, run `python ./configure.py --backend scalar`, otherwise run `python ./configure.py --backend auto`
+If you are compiling for the Pi Zero, change the last line to `python ./configure.py --backend scalar`
+
+You can skip the following several lines from the original darknet-nnpack repos. I found them not necessary/I already configur
 It's also recommended to examine and edit https://github.com/digitalbrain79/NNPACK-darknet/blob/master/src/init.c#L215 to match your CPU architecture if you're on ARM, as the cache size detection code only works on x86.
 
 Since none of the ARM CPUs have a L3, it's [recommended](https://github.com/Maratyszcza/NNPACK/issues/33) to set L3 = L2 and set inclusive=false. This should lead to the L2 size being set equal to the L3 size.
 
 Ironically, after some trial and error, I've found that setting L3 to an arbitrary 2MB seems to work pretty well.
+
+Build NNPACK with ninja (this might take quie  a while, be patient. In fact my Pi crashed in the first time. Just reboot and run again)
+
 ```
 $NINJA_PATH/ninja
+```
+do a ```ls``` and you should be able to find folder ```lib``` and ```include``` if all went well.
+```
+ls
+```
+Test if NNPACK is working
+```
 bin/convolution-inference-smoketest
+```
+In my case, the test actually failed in the first time. But I just ran the test again and all items are passed. So if your test failed, don't panic, try one more time.
+
+Copy the libraries and header files to the system environment
+```
 sudo cp -a lib/* /usr/lib/
 sudo cp include/nnpack.h /usr/include/
 sudo cp deps/pthreadpool/include/pthreadpool.h /usr/include/
 ```
 
-If the convolution-inference-smoketest fails, you've probably hit a compiler bug and will have to change to Clang or an older version of GCC. You can skip the qmkl/qasm/qbin2hex steps if you aren't targeting the QPU.
+If the convolution-inference-smoketest fails, you've probably hit a compiler bug and will have to change to Clang or an older version of GCC. 
+
+You can skip the qmkl/qasm/qbin2hex steps if you aren't targeting the QPU.
 
 Install [qmkl](https://github.com/Idein/qmkl)
 ```
@@ -74,6 +107,16 @@ git clone https://github.com/Terminus-IMRC/qpu-bin-to-hex
 cd qpu-bin-to-hex
 make
 sudo make install
+```
+
+# 2. Install darknet-nnpack
+Simply clone this repository. Note that we are cloning the **yolov3** branch. It comes with the python wrapper I wrote, correct makefile, and yolov3 weight.
+```
+cd
+git clone https://github.com/zxzhaixiang/darknet-nnpack
+git checkout yolov3
+cd darknet-nnpack
+make
 ```
 
 At this point, you can build darknet-nnpack using `make`. Be sure to edit the Makefile before compiling.
