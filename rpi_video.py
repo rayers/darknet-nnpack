@@ -10,10 +10,11 @@ iframe = 0
 camera = PiCamera()
 
 #Yolo v3 is a full convolutional model. It does not care the size of input image, as long as h and w are multiplication of 32
-camera.resolution = (224, 224)
+
+#camera.resolution = (160,160)
 #camera.resolution = (416, 416)
-#camera.resolution = (544,544)
-#camera.resolution = (608, 608)
+#camera.resolution = (544, 544)
+camera.resolution = (608, 608)
 #camera.resolution = (608, 288)
 
 
@@ -36,6 +37,7 @@ while True:
         if 'Enter Image Path' in stdout:
             try:
                im = cv2.imread('predictions.png')
+               print(im.shape)
                cv2.imshow('yolov3-tiny',im)
                key = cv2.waitKey(5) 
             except Exception:
