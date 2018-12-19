@@ -53,8 +53,7 @@ export NINJA_PATH=$PWD
 cd
 ```
 
-~~Install clang (I'm not sure why we need this, NNPACK doesn't use it unless you specifically target it).~~
-~~
+~~Install clang (I'm not sure why we need this, NNPACK doesn't use it unless you specifically target it).
 sudo apt-get install clang
 ~~
 ## Instal NNPACK
@@ -69,11 +68,11 @@ python ./configure.py --backend auto
 If you are compiling for the Pi Zero, change the last line to `python ./configure.py --backend scalar`
 
 You can skip the following several lines from the original darknet-nnpack repos. I found them not very necessary (or maybe I missed something)
-~~It's also recommended to examine and edit https://github.com/digitalbrain79/NNPACK-darknet/blob/master/src/init.c#L215 to match your CPU architecture if you're on ARM, as the cache size detection code only works on x86.
+~~It's also recommended to examine and edit https://github.com/digitalbrain79/NNPACK-darknet/blob/master/src/init.c#L215 to match your CPU architecture if you're on ARM, as the cache size detection code only works on x86.~~
 
-~~Since none of the ARM CPUs have a L3, it's [recommended](https://github.com/Maratyszcza/NNPACK/issues/33) to set L3 = L2 and set inclusive=false. This should lead to the L2 size being set equal to the L3 size.
+~~Since none of the ARM CPUs have a L3, it's [recommended](https://github.com/Maratyszcza/NNPACK/issues/33) to set L3 = L2 and set inclusive=false. This should lead to the L2 size being set equal to the L3 size.~~
 
-~~Ironically, after some trial and error, I've found that setting L3 to an arbitrary 2MB seems to work pretty well.
+~~Ironically, after some trial and error, I've found that setting L3 to an arbitrary 2MB seems to work pretty well.~~
 
 Build NNPACK with ninja (this might take * *quie* * a while, be patient. In fact my Pi crashed in the first time. Just reboot and run again):
 ```
