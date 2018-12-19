@@ -22,11 +22,11 @@ Enable pi camera
 ```
 sudo raspi-config
 ```
-Goes to ```Interfacing Options```, and enable ```P1/Camera```
+Go to ```Interfacing Options```, and enable ```P1/Camera```
 
 You will have to reboot the pi to be able to use the camera
 
-A few additional words here. In the advanced option of raspi-config, you can adjust the memory split between CPU and GPU. Althoug we would like to allocate more ram to CPU so that the pi can load larger model, you will want to allocate at least 64MB to GPU as the camera module would require it.
+A few additional words here. In the advanced option of raspi-config, you can adjust the memory split between CPU and GPU. Althoug we would like to allocate more ram to CPU so that the pi can load a larger model, you will want to allocate at least 64MB to GPU as the camera module would require it.
 
 # Step 1: Install NNPACK
 
@@ -56,7 +56,7 @@ cd
 ~~Install clang (I'm not sure why we need this, NNPACK doesn't use it unless you specifically target it).~~
 ~~sudo apt-get install clang~~
 
-## Instal NNPACK
+## Install NNPACK
 
 Install modified [NNPACK](https://github.com/shizukachan/NNPACK)
 ```
