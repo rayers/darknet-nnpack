@@ -127,7 +127,7 @@ sudo cp deps/pthreadpool/include/pthreadpool.h /usr/include/
 ~~sudo make install
 ~~
 
-# 2. Install darknet-nnpack
+# Step 2. Install darknet-nnpack
 We have finally finished configuring everything needed. Now simply clone this repository. Note that we are cloning the **yolov3** branch. It comes with the python wrapper I wrote, correct makefile, and yolov3 weight:
 ```
 cd
@@ -139,7 +139,7 @@ make
 
 At this point, you can build darknet-nnpack using `make`. Be sure to edit the Makefile before compiling.
 
-# 3. Test with Yolov3-tiny
+# Step 3. Test with Yolov3-tiny
 Despite doing so many pre-configurations, Raspberry Pi is not powerful enough to run the full YoloV3 version. The YoloV3-tiny version, however, can be run at about 1 frame per second rate
 
 I wrote two python wrappers, ```rpi_video.py``` and ```rpi_record.py```. What these two python codes do is to take pictures with PiCamera python library, and spawn darknet executable to conduct detection taks to the picture, and then save to prediction.png, and the python code will load prediction.png and display it on the screen via opencv. Therefore, all the detection jobs are done by darknet, and python simply provides in and out. ```rpi_video.py``` will only display the real-time object detection result on the screen as an animation (about 1 frame every 1-1.5 second); ```rpi_record.py``` will also save each frame for your own record (like making a git animation afterwards)
@@ -163,67 +163,8 @@ yolo_proc = Popen(["./darknet",
                    stdin = PIPE, stdout = PIPE)
 ```
 
-For more details/weights/configuration/different ways to call darknet, refer to the official YOLO homepage [YOLO homepage](https://pjreddie.com/darknet/yolo/).
+For more details/weights/configuration/different ways to call darknet, refer to the official [YOLO homepage](https://pjreddie.com/darknet/yolo/).
 
-## Improved NNPACK CPU-only Results (Raspberry Pi 3)
-All NNPACK=1 results use march=native, pthreadpool is initialized for one thread for the single core Pi Zero, and mcpu=cortex-a53 for the Pi 3.
 
-For non-implicit-GEMM convolution computation, it is possible to precompute the kernel to accelerate subsequent inferences. The first inference is slower than later ones, but the speedup is significant (40%+). This optimization is a classic time-memory tradeoff; YOLOv2 won't fit in the Raspberry Pi 3's memory with this code.
-
-System | Model | Build Options | Prediction Time (seconds)
-:-:|:-:|:-:|:-:
-Pi 3 | Tiny-YOLO | NNPACK=1,ARM_NEON=1,NNPACK_FAST=1 | 1.4 (first frame), 0.82 (subsequent frames)
-Pi 3 | Tiny-YOLO | NNPACK=1,ARM_NEON=1,NNPACK_FAST=0 | 1.2
-Pi 3 | Darknet19 | NNPACK=1,ARM_NEON=1,NNPACK_FAST=1 | 1.3 (first frame), 0.66 (subsequent frames)
-Pi 3 | Darknet19 | NNPACK=1,ARM_NEON=1,NNPACK_FAST=0 | 0.93
-i5-3320M | Tiny-YOLO | NNPACK=1,NNPACK_FAST=1 | 0.27 (first frame), 0.17 (subsequent frames)
-i5-3320M | Tiny-YOLO | NNPACK=1,NNPACK_FAST=0 | 0.42
-i5-3320M | Tiny-YOLO | NNPACK=0, no OpenMP | 1.4
-i5-3320M | YOLOv2 | NNPACK=1,NNPACK_FAST=1 | 0.98 (first frame), 0.69 (subsequent frames)
-i5-3320M | YOLOv2 | NNPACK=1,NNPACK_FAST=0 | 1.4
-i5-3320M | YOLOv2 | NNPACK=0, no OpenMP | 5.5
-
-On the Intel chip, using transformed GEMM is always faster, even with precomputation on the first frame, than implicit-GEMM. On the Pi 3, implicit-GEMM is faster on the first frame. This suggests that memory bandwidth may be a limiting factor on the Pi 3.
-
-## NNPACK+QPU_GEMM Results
-I used these NNPACK cache tunings for the Pi 3:
-```
-L1 size: 32k / associativity: 4 / thread: 1
-L2 size: 480k / associativity: 16 / thread: 4 / inclusive: false
-L3 size: 2016k / associativity: 16 / thread: 1 / inclusive: false
-This should yield l1.size=32, l2.size=120, and l3.size=2016 after NNPACK init is run.
-```
-And these for the Pi Zero:
-```
-L1 size: 16k / associativity: 4 / thread: 1
-L2 size: 128k / associativity: 4 / thread: 1 / inclusive: false
-L3 size: 128k / associativity: 4 / thread: 1 / inclusive: false
-This should yield l1.size=16, l2.size=128, and l3.size=128 after NNPACK init is run.
-```
-Even though the Pi Zero's L2 is attached to the QPU and almost as slow as main memory, it does seem to have a small benefit.
-
-Raspberry Pi | Model | Build Options | Prediction Time (seconds)
-:-:|:-:|:-:|:-:
-Pi 3 | Tiny-YOLO | NNPACK=1,ARM_NEON=1,QPU_GEMM=1 | 5.3
-Pi Zero | Tiny-YOLO | NNPACK=1,QPU_GEMM=1 | 7.7
-Pi Zero | Tiny-YOLO | NNPACK=1,QPU_GEMM=0 | 28.2
-Pi Zero | Tiny-YOLO | NNPACK=0,QPU_GEMM=0 | 124
-Pi Zero | Tiny-YOLO | NNPACK=0,QPU_GEMM=1 | 8.0
-Pi Zero | Darknet19 | NNPACK=1,QPU_GEMM=1 | 3.3
-Pi Zero | Darknet19 | NNPACK=1,QPU_GEMM=0 | 22.3
-Pi Zero | Darknet19 | NNPACK=0,QPU_GEMM=1 | 3.5
-Pi Zero | Darknet19 | NNPACK=0,QPU_GEMM=0 | 96.3
-Pi Zero | Darknet | NNPACK=1,QPU_GEMM=1 | 1.23
-Pi Zero | Darknet | NNPACK=1,QPU_GEMM=0 | 4.15
-Pi Zero | Darknet | NNPACK=0,QPU_GEMM=1 | 1.32
-Pi Zero | Darknet | NNPACK=0,QPU_GEMM=0 | 14.9
-
-On the Pi 3, the QPU is slower than NEON-NNPACK. qmkl is just unable to match the performance NNPACK's extremely well tuned NEON implicit GEMM.
-
-On the Pi Zero, the QPU is faster than scalar-NNPACK. I have yet to investigate why enabling NNPACK gives a very slight speedup on the Pi Zero.
-
-## GPU / config.txt considerations
-Using the QPU requires memory set aside for the GPU. Using the command `sudo vcdbg reloc` you can see how much memory is free on the GPU - it's roughly 20MB less than what is specified by gpu_mem.
-
-I recommend no less than gpu_mem=80 if you want to run Tiny-YOLO/Darknet19/Darknet. The code I've used tries to keep GPU allocations to a minimum, but if Darknet crashes before GPU memory is freed, it will be gone until a reboot.
-
+==========================
+You can find more information in Shizukachan's darknet-nnpack repos. He has more detailed benchmark test using different hardware platform and compiling options. 
