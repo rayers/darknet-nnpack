@@ -36,7 +36,7 @@ Idein's [qmkl](https://github.com/Idein/qmkl) is also used to accelerate the SGE
 
 The NNPACK implementation in Darknet was improved to use transform-based convolution computation, allowing for 40%+ faster inference performance on non-initial frames. This is most useful for repeated inferences, ie. video, or if Darknet is left open to continue processing input instead of allowed to terminate after processing input.
 
-## Build Instructions
+## Install Ninja (building tool)
 
 Install [PeachPy](https://github.com/Maratyszcza/PeachPy) and [confu](https://github.com/Maratyszcza/confu)
 ```
@@ -52,10 +52,13 @@ git checkout release
 export NINJA_PATH=$PWD
 cd
 ```
-Install clang (I'm not sure why we need this, NNPACK doesn't use it unless you specifically target it).
-```
+
+~~Install clang (I'm not sure why we need this, NNPACK doesn't use it unless you specifically target it).~~
+~~
 sudo apt-get install clang
-```
+~~
+## Instal NNPACK
+
 Install modified [NNPACK](https://github.com/shizukachan/NNPACK)
 ```
 git clone https://github.com/shizukachan/NNPACK
@@ -98,31 +101,31 @@ sudo cp deps/pthreadpool/include/pthreadpool.h /usr/include/
 ~~You can skip the qmkl/qasm/qbin2hex steps if you aren't targeting the QPU.
 
 ~~Install [qmkl](https://github.com/Idein/qmkl)
-~~```
+~~
 ~~sudo apt-get install cmake
 ~~git clone https://github.com/Idein/qmkl.git
 ~~cd qmkl
 ~~cmake .
 ~~make
 ~~sudo make install
-~~```
+~~
 
 ~~Install [qasm2](https://github.com/Terminus-IMRC/qpu-assembler2)
-~~```
+~~
 ~~sudo apt-get install flex
 ~~git clone https://github.com/Terminus-IMRC/qpu-assembler2
 ~~cd qpu-assembler2
 ~~make
 ~~sudo make install
-~~```
+~~
 
 ~~Install [qbin2hex](https://github.com/Terminus-IMRC/qpu-bin-to-hex)
-~~```
+~~
 ~~git clone https://github.com/Terminus-IMRC/qpu-bin-to-hex
 ~~cd qpu-bin-to-hex
 ~~make
 ~~sudo make install
-~~```
+~~
 
 # 2. Install darknet-nnpack
 We have finally finished configuring everything needed. Now simply clone this repository. Note that we are cloning the **yolov3** branch. It comes with the python wrapper I wrote, correct makefile, and yolov3 weight:
