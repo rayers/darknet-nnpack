@@ -95,7 +95,7 @@ sudo cp include/nnpack.h /usr/include/
 sudo cp deps/pthreadpool/include/pthreadpool.h /usr/include/
 ```
 
-~~If the convolution-inference-smoketest fails, you've probably hit a compiler bug and will have to change to Clang or an older version of GCC. ~~
+~~If the convolution-inference-smoketest fails, you've probably hit a compiler bug and will have to change to Clang or an older version of GCC.~~
 
 ~~You can skip the qmkl/qasm/qbin2hex steps if you aren't targeting the QPU.~~
 
@@ -159,6 +159,6 @@ yolo_proc = Popen(["./darknet",
 For more details/weights/configuration/different ways to call darknet, refer to the official [YOLO homepage](https://pjreddie.com/darknet/yolo/).
 
 
-==========================
+==================================================================================================================
 
 You can find more information in Shizukachan's darknet-nnpack repos. He has more detailed benchmark test using different hardware platform and compiling options. 
