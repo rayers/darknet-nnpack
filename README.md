@@ -53,9 +53,9 @@ export NINJA_PATH=$PWD
 cd
 ```
 
-~~Install clang (I'm not sure why we need this, NNPACK doesn't use it unless you specifically target it).
-sudo apt-get install clang
-~~
+~~Install clang (I'm not sure why we need this, NNPACK doesn't use it unless you specifically target it).~~
+~~sudo apt-get install clang~~
+
 ## Instal NNPACK
 
 Install modified [NNPACK](https://github.com/shizukachan/NNPACK)
@@ -95,36 +95,30 @@ sudo cp include/nnpack.h /usr/include/
 sudo cp deps/pthreadpool/include/pthreadpool.h /usr/include/
 ```
 
-~~If the convolution-inference-smoketest fails, you've probably hit a compiler bug and will have to change to Clang or an older version of GCC. 
+~~If the convolution-inference-smoketest fails, you've probably hit a compiler bug and will have to change to Clang or an older version of GCC. ~~
 
-~~You can skip the qmkl/qasm/qbin2hex steps if you aren't targeting the QPU.
+~~You can skip the qmkl/qasm/qbin2hex steps if you aren't targeting the QPU.~~
 
-~~Install [qmkl](https://github.com/Idein/qmkl)
-~~
-~~sudo apt-get install cmake
-~~git clone https://github.com/Idein/qmkl.git
-~~cd qmkl
-~~cmake .
-~~make
-~~sudo make install
-~~
+~~Install [qmkl](https://github.com/Idein/qmkl)~~
+~~sudo apt-get install cmake~~
+~~git clone https://github.com/Idein/qmkl.git~~
+~~cd qmkl~~
+~~cmake .~~
+~~make~~
+~~sudo make install~~
 
-~~Install [qasm2](https://github.com/Terminus-IMRC/qpu-assembler2)
-~~
-~~sudo apt-get install flex
-~~git clone https://github.com/Terminus-IMRC/qpu-assembler2
-~~cd qpu-assembler2
-~~make
-~~sudo make install
-~~
+~~Install [qasm2](https://github.com/Terminus-IMRC/qpu-assembler2)~~
+~~sudo apt-get install flex~~
+~~git clone https://github.com/Terminus-IMRC/qpu-assembler2~~
+~~cd qpu-assembler2~~
+~~make~~
+~~sudo make install~~
 
-~~Install [qbin2hex](https://github.com/Terminus-IMRC/qpu-bin-to-hex)
-~~
-~~git clone https://github.com/Terminus-IMRC/qpu-bin-to-hex
-~~cd qpu-bin-to-hex
-~~make
-~~sudo make install
-~~
+~~Install [qbin2hex](https://github.com/Terminus-IMRC/qpu-bin-to-hex)~~
+~~git clone https://github.com/Terminus-IMRC/qpu-bin-to-hex~~
+~~cd qpu-bin-to-hex~~
+~~make~~
+~~sudo make install~~
 
 # Step 2. Install darknet-nnpack
 We have finally finished configuring everything needed. Now simply clone this repository. Note that we are cloning the **yolov3** branch. It comes with the python wrapper I wrote, correct makefile, and yolov3 weight:
@@ -166,4 +160,5 @@ For more details/weights/configuration/different ways to call darknet, refer to 
 
 
 ==========================
+
 You can find more information in Shizukachan's darknet-nnpack repos. He has more detailed benchmark test using different hardware platform and compiling options. 
