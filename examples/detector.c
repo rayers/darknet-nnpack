@@ -622,7 +622,7 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         detection *dets = get_network_boxes(net, im.w, im.h, thresh, hier_thresh, 0, 1, &nboxes);
         printf("%d\n", nboxes);
 	for(int i=0;i<nboxes;i++){
-	   printf("Box %d at (x,y)=(%f,%f) with (w,h)=(%f,%f)", i, dets[i].bbox.x, dets[i].bbox.y, dets[i].bbox.w, dets[i].bbox.h); 
+	   printf("Box %d at (x,y)=(%f,%f) with (w,h)=(%f,%f)\n", i, dets[i].bbox.x, dets[i].bbox.y, dets[i].bbox.w, dets[i].bbox.h); 
 	}
         //if (nms) do_nms_obj(boxes, probs, l.w*l.h*l.n, l.classes, nms);
         if (nms) do_nms_sort(dets, nboxes, l.classes, nms);
