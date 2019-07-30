@@ -27,8 +27,8 @@ CC=gcc
 NVCC=nvcc 
 AR=ar
 ARFLAGS=rcs
-OPTS=-Ofast
-LDFLAGS= -lm -pthread 
+OPTS=-O2
+LDFLAGS= -lm -pthread -lrt
 COMMON= -Iinclude/ -Isrc/
 #CFLAGS=-Wall -Wno-unknown-pragmas -Wfatal-errors -fPIC
 #CFLAGS=-Wall -Wno-unknown-pragmas -Wfatal-errors -fPIC -march=native -mfpmath=sse
