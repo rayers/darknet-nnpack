@@ -443,7 +443,7 @@ typedef enum {
     CONSTANT, STEP, EXP, POLY, STEPS, SIG, RANDOM
 } learning_rate_policy;
 
-typedef struct network{
+struct network{
     int n;
     int batch;
     size_t *seen;
@@ -512,7 +512,7 @@ typedef struct network{
 #ifdef NNPACK
 	pthreadpool_t threadpool;
 #endif
-} network;
+};
 
 typedef struct {
     int w;
