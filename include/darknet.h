@@ -488,6 +488,7 @@ struct network{
     float exposure;
     float saturation;
     float hue;
+		int flip;
     int random;
 
     int gpu_index;
@@ -589,6 +590,7 @@ typedef struct load_args{
     float saturation;
     float exposure;
     float hue;
+		int flip;
     data *d;
     image *im;
     image *resized;
