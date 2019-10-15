@@ -135,7 +135,7 @@ void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, i
             sprintf(buff, "%s/%s.backup", backup_directory, base);
             save_weights(net, buff);
         }
-        if(i%10000==0 || (i < 1000 && i%100 == 0)){
+        if(i%1000==0 && i <= 2000 ){
 #ifdef GPU
             if(ngpus != 1) sync_nets(nets, ngpus, 0);
 #endif
@@ -588,7 +588,7 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         if(filename){
             strncpy(input, filename, 256);
         } else {
-            printf("Enter Image Path: ");
+            printf("Enter Image Path:\n");
             fflush(stdout);
             input = fgets(input, 256, stdin);
             if(!input) return;
